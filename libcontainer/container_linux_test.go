@@ -65,6 +65,10 @@ func (m *mockCgroupManager) GetCgroups() (*configs.Cgroup, error) {
 	return nil, nil
 }
 
+func (m *mockCgroupManager) ThawAll() error {
+	return nil
+}
+
 func (m *mockIntelRdtManager) Apply(pid int) error {
 	return nil
 }
