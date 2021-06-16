@@ -54,11 +54,38 @@ func destroy(c *linuxContainer) error {
 		err = rerr
 	}
 	c.initProcess = nil
+	if !c.config.Namespaces.Contains(configs.NEWNS) ||
+		c.config.Namespaces.PathOf(configs.NEWNS) != "" {
+		unmountMounts(c)
+	}
 	if herr := runPoststopHooks(c); err == nil {
 		err = herr
 	}
 	c.state = &stoppedState{c: c}
 	return err
+}
+
+func unmountMounts(c *linuxContainer) {
+	config := c.Config()
+
+	// Unmount recursive
+	err := unix.Unmount(config.Rootfs, unix.MNT_DETACH)
+	if err == nil {
+		return
+	}
+
+	// If recursive unmount fails, try best-effort unmount
+	for i := len(config.Mounts) - 1; i >= 0; i-- {
+		mountpoint := config.Rootfs + config.Mounts[i].Destination
+		err := unix.Unmount(mountpoint, unix.MNT_DETACH)
+		if err != nil {
+			logrus.Warn(err)
+		}
+	}
+	err = unix.Unmount(config.Rootfs, unix.MNT_DETACH)
+	if err != nil {
+		logrus.Warn(err)
+	}
 }
 
 func runPoststopHooks(c *linuxContainer) error {
