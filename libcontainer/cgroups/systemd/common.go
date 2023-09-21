@@ -1,3 +1,5 @@
+//go:build linux && !no_systemd
+
 package systemd
 
 import (
@@ -33,7 +35,7 @@ var (
 	isRunningSystemdOnce sync.Once
 	isRunningSystemd     bool
 
-	GenerateDeviceProps func(r *configs.Resources, sdVer int) ([]systemdDbus.Property, error)
+	GenerateDeviceProps func(r *configs.Resources, sdVer int) (configs.SdProperties, error)
 )
 
 // NOTE: This function comes from package github.com/coreos/go-systemd/util
@@ -85,8 +87,8 @@ func ExpandSlice(slice string) (string, error) {
 	return path, nil
 }
 
-func newProp(name string, units interface{}) systemdDbus.Property {
-	return systemdDbus.Property{
+func newProp(name string, units interface{}) configs.SdProperty {
+	return configs.SdProperty{
 		Name:  name,
 		Value: dbus.MakeVariant(units),
 	}
@@ -124,7 +126,7 @@ func isUnitExists(err error) bool {
 	return isDbusError(err, "org.freedesktop.systemd1.UnitExists")
 }
 
-func startUnit(cm *dbusConnManager, unitName string, properties []systemdDbus.Property, ignoreExist bool) error {
+func startUnit(cm *dbusConnManager, unitName string, properties configs.SdProperties, ignoreExist bool) error {
 	statusChan := make(chan string, 1)
 	retry := true
 
@@ -210,8 +212,8 @@ func resetFailedUnit(cm *dbusConnManager, name string) error {
 	})
 }
 
-func getUnitTypeProperty(cm *dbusConnManager, unitName string, unitType string, propertyName string) (*systemdDbus.Property, error) {
-	var prop *systemdDbus.Property
+func getUnitTypeProperty(cm *dbusConnManager, unitName string, unitType string, propertyName string) (*configs.SdProperty, error) {
+	var prop *configs.SdProperty
 	err := cm.retryOnDisconnect(func(c *systemdDbus.Conn) (Err error) {
 		prop, Err = c.GetUnitTypePropertyContext(context.TODO(), unitName, unitType, propertyName)
 		return Err
@@ -219,7 +221,7 @@ func getUnitTypeProperty(cm *dbusConnManager, unitName string, unitType string, 
 	return prop, err
 }
 
-func setUnitProperties(cm *dbusConnManager, name string, properties ...systemdDbus.Property) error {
+func setUnitProperties(cm *dbusConnManager, name string, properties ...configs.SdProperty) error {
 	return cm.retryOnDisconnect(func(c *systemdDbus.Conn) error {
 		return c.SetUnitPropertiesContext(context.TODO(), name, true, properties...)
 	})
@@ -276,7 +278,7 @@ func systemdVersionAtoi(str string) (int, error) {
 	return ver, nil
 }
 
-func addCpuQuota(cm *dbusConnManager, properties *[]systemdDbus.Property, quota int64, period uint64) {
+func addCPUQuota(cm *dbusConnManager, properties *configs.SdProperties, quota int64, period uint64) {
 	if period != 0 {
 		// systemd only supports CPUQuotaPeriodUSec since v242
 		sdVer := systemdVersion(cm)
@@ -310,7 +312,7 @@ func addCpuQuota(cm *dbusConnManager, properties *[]systemdDbus.Property, quota 
 	}
 }
 
-func addCpuset(cm *dbusConnManager, props *[]systemdDbus.Property, cpus, mems string) error {
+func addCpuset(cm *dbusConnManager, props *configs.SdProperties, cpus, mems string) error {
 	if cpus == "" && mems == "" {
 		return nil
 	}
@@ -346,7 +348,7 @@ func addCpuset(cm *dbusConnManager, props *[]systemdDbus.Property, cpus, mems st
 
 // generateDeviceProperties takes the configured device rules and generates a
 // corresponding set of systemd properties to configure the devices correctly.
-func generateDeviceProperties(r *configs.Resources, cm *dbusConnManager) ([]systemdDbus.Property, error) {
+func generateDeviceProperties(r *configs.Resources, cm *dbusConnManager) (configs.SdProperties, error) {
 	if GenerateDeviceProps == nil {
 		if len(r.Devices) > 0 {
 			return nil, cgroups.ErrDevicesUnsupported
