@@ -8,9 +8,9 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/moby/sys/capability"
 	"github.com/opencontainers/runc/libcontainer/configs"
 	"github.com/sirupsen/logrus"
-	"github.com/syndtr/gocapability/capability"
 )
 
 const allCapabilityTypes = capability.CAPS | capability.BOUNDING | capability.AMBIENT
@@ -24,22 +24,23 @@ var (
 		capability.AMBIENT,
 	}
 
-	capMap = sync.OnceValue(func() map[string]capability.Cap {
-		cm := make(map[string]capability.Cap, capability.CAP_LAST_CAP+1)
-		for _, c := range capability.List() {
-			if c > capability.CAP_LAST_CAP {
-				continue
-			}
+	capMap = sync.OnceValues(func() (map[string]capability.Cap, error) {
+		list, err := capability.ListSupported()
+		if err != nil {
+			return nil, err
+		}
+		cm := make(map[string]capability.Cap, len(list))
+		for _, c := range list {
 			cm["CAP_"+strings.ToUpper(c.String())] = c
 		}
-		return cm
+		return cm, nil
 	})
 )
 
 // KnownCapabilities returns the list of the known capabilities.
 // Used by `runc features`.
 func KnownCapabilities() []string {
-	list := capability.List()
+	list := capability.ListKnown()
 	res := make([]string, len(list))
 	for i, c := range list {
 		res[i] = "CAP_" + strings.ToUpper(c.String())
@@ -51,12 +52,12 @@ func KnownCapabilities() []string {
 // or Capabilities that are unavailable in the current environment are ignored,
 // printing a warning instead.
 func New(capConfig *configs.Capabilities) (*Caps, error) {
-	var (
-		err error
-		c   Caps
-	)
+	var c Caps
 
-	cm := capMap()
+	cm, err := capMap()
+	if err != nil {
+		return nil, err
+	}
 	unknownCaps := make(map[string]struct{})
 	ignoredCaps := make(map[string]struct{})
 	// capSlice converts the slice of capability names in caps, to their numeric
