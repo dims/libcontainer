@@ -619,6 +619,33 @@ func (c *Container) newParentProcess(p *Process) (parentProcess, error) {
 	}
 
 	if safeExe != nil {
+		// Because we want to add safeExe to the set of ExtraFiles, if the fd of safeExe is
+		// too small, go stdlib will dup3 it to another fd, or dup3 a other fd to this fd,
+		// then it will cause the fd type cmd.Path refers to a random path. (#4294)
+
+		// +1 means safeExe.
+		minFd := stdioFdCount + len(cmd.ExtraFiles) + 1
+		if p.Init {
+			// This refers to fifo.
+			minFd++
+		}
+		if int(safeExe.Fd()) <= minFd {
+			maxFd, err := utils.GetMaxFds()
+			if err != nil {
+				return nil, fmt.Errorf("unable to get the max opened fd of current process: %w", err)
+			}
+			maxFd++
+			if err := unix.Dup3(int(safeExe.Fd()), maxFd, unix.O_CLOEXEC); err != nil {
+				return nil, fmt.Errorf("unable to dup3 the fd from %d to %d: %w", safeExe.Fd(), maxFd, err)
+			}
+			cmd.Path = "/proc/self/fd/" + strconv.Itoa(maxFd)
+			newSafeExe := os.NewFile(uintptr(maxFd), safeExe.Name())
+			if err := safeExe.Close(); err != nil {
+				return nil, fmt.Errorf("unable to close old safe exe(%d): %w", safeExe.Fd(), err)
+			}
+			safeExe = newSafeExe
+		}
+
 		// Due to a Go stdlib bug, we need to add safeExe to the set of
 		// ExtraFiles otherwise it is possible for the stdlib to clobber the fd
 		// during forkAndExecInChild1 and replace it with some other file that
