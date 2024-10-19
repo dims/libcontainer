@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opencontainers/runc/libcontainer/devices"
-	"github.com/opencontainers/runc/libcontainer/specconv"
+	"github.com/dims/libcontainer/devices"
+	"github.com/dims/libcontainer/specconv"
 )
 
 func hash(s, comm string) string {

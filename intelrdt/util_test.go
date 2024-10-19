@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/opencontainers/runc/libcontainer/configs"
+	"github.com/dims/libcontainer/configs"
 )
 
 type intelRdtTestUtil struct {

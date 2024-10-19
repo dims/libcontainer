@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/opencontainers/runc/libcontainer/cgroups"
-	"github.com/opencontainers/runc/libcontainer/configs"
+	"github.com/dims/libcontainer/cgroups"
+	"github.com/dims/libcontainer/configs"
 )
 
 type BlkioGroup struct {

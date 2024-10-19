@@ -12,9 +12,9 @@ import (
 	"github.com/godbus/dbus/v5"
 	"github.com/sirupsen/logrus"
 
-	"github.com/opencontainers/runc/libcontainer/cgroups"
-	"github.com/opencontainers/runc/libcontainer/cgroups/fs"
-	"github.com/opencontainers/runc/libcontainer/configs"
+	"github.com/dims/libcontainer/cgroups"
+	"github.com/dims/libcontainer/cgroups/fs"
+	"github.com/dims/libcontainer/configs"
 )
 
 type legacyManager struct {

@@ -6,7 +6,7 @@ package userns
 import (
 	"strings"
 
-	"github.com/opencontainers/runc/libcontainer/user"
+	"github.com/dims/libcontainer/user"
 )
 
 func FuzzUIDMap(data []byte) int {

@@ -11,8 +11,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sys/unix"
 
-	"github.com/opencontainers/runc/libcontainer/configs"
-	"github.com/opencontainers/runc/libcontainer/seccomp/patchbpf"
+	"github.com/dims/libcontainer/configs"
+	"github.com/dims/libcontainer/seccomp/patchbpf"
 )
 
 var (

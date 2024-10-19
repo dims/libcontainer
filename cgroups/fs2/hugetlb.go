@@ -5,9 +5,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/opencontainers/runc/libcontainer/cgroups"
-	"github.com/opencontainers/runc/libcontainer/cgroups/fscommon"
-	"github.com/opencontainers/runc/libcontainer/configs"
+	"github.com/dims/libcontainer/cgroups"
+	"github.com/dims/libcontainer/cgroups/fscommon"
+	"github.com/dims/libcontainer/configs"
 )
 
 func isHugeTlbSet(r *configs.Resources) bool {

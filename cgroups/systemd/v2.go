@@ -15,9 +15,9 @@ import (
 	securejoin "github.com/cyphar/filepath-securejoin"
 	"github.com/sirupsen/logrus"
 
-	"github.com/opencontainers/runc/libcontainer/cgroups"
-	"github.com/opencontainers/runc/libcontainer/cgroups/fs2"
-	"github.com/opencontainers/runc/libcontainer/configs"
+	"github.com/dims/libcontainer/cgroups"
+	"github.com/dims/libcontainer/cgroups/fs2"
+	"github.com/dims/libcontainer/configs"
 )
 
 type unifiedManager struct {

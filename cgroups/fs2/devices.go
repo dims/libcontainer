@@ -5,11 +5,11 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/opencontainers/runc/libcontainer/cgroups/ebpf"
-	"github.com/opencontainers/runc/libcontainer/cgroups/ebpf/devicefilter"
-	"github.com/opencontainers/runc/libcontainer/configs"
-	"github.com/opencontainers/runc/libcontainer/devices"
-	"github.com/opencontainers/runc/libcontainer/userns"
+	"github.com/dims/libcontainer/cgroups/ebpf"
+	"github.com/dims/libcontainer/cgroups/ebpf/devicefilter"
+	"github.com/dims/libcontainer/configs"
+	"github.com/dims/libcontainer/devices"
+	"github.com/dims/libcontainer/userns"
 )
 
 func isRWM(perms devices.Permissions) bool {

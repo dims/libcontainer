@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/opencontainers/runc/libcontainer/configs"
+	"github.com/dims/libcontainer/configs"
 
 	libseccomp "github.com/seccomp/libseccomp-golang"
 	"github.com/sirupsen/logrus"

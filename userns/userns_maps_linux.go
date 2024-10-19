@@ -10,7 +10,7 @@ import (
 	"os"
 	"unsafe"
 
-	"github.com/opencontainers/runc/libcontainer/configs"
+	"github.com/dims/libcontainer/configs"
 	"github.com/sirupsen/logrus"
 )
 

@@ -12,7 +12,7 @@ import (
 	"strings"
 	_ "unsafe" // for go:linkname
 
-	"github.com/opencontainers/runc/libcontainer/system"
+	"github.com/dims/libcontainer/system"
 
 	securejoin "github.com/cyphar/filepath-securejoin"
 	"golang.org/x/sys/unix"

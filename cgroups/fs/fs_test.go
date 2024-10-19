@@ -3,8 +3,8 @@ package fs
 import (
 	"testing"
 
-	"github.com/opencontainers/runc/libcontainer/cgroups"
-	"github.com/opencontainers/runc/libcontainer/configs"
+	"github.com/dims/libcontainer/cgroups"
+	"github.com/dims/libcontainer/configs"
 )
 
 func BenchmarkGetStats(b *testing.B) {

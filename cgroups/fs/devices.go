@@ -5,11 +5,11 @@ import (
 	"errors"
 	"reflect"
 
-	"github.com/opencontainers/runc/libcontainer/cgroups"
-	cgroupdevices "github.com/opencontainers/runc/libcontainer/cgroups/devices"
-	"github.com/opencontainers/runc/libcontainer/configs"
-	"github.com/opencontainers/runc/libcontainer/devices"
-	"github.com/opencontainers/runc/libcontainer/userns"
+	"github.com/dims/libcontainer/cgroups"
+	cgroupdevices "github.com/dims/libcontainer/cgroups/devices"
+	"github.com/dims/libcontainer/configs"
+	"github.com/dims/libcontainer/devices"
+	"github.com/dims/libcontainer/userns"
 )
 
 type DevicesGroup struct {

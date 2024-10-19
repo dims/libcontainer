@@ -14,12 +14,12 @@ import (
 
 	systemdDbus "github.com/coreos/go-systemd/v22/dbus"
 	dbus "github.com/godbus/dbus/v5"
-	"github.com/opencontainers/runc/libcontainer/cgroups"
-	"github.com/opencontainers/runc/libcontainer/configs"
-	"github.com/opencontainers/runc/libcontainer/devices"
-	"github.com/opencontainers/runc/libcontainer/seccomp"
-	"github.com/opencontainers/runc/libcontainer/userns"
-	libcontainerUtils "github.com/opencontainers/runc/libcontainer/utils"
+	"github.com/dims/libcontainer/cgroups"
+	"github.com/dims/libcontainer/configs"
+	"github.com/dims/libcontainer/devices"
+	"github.com/dims/libcontainer/seccomp"
+	"github.com/dims/libcontainer/userns"
+	libcontainerUtils "github.com/dims/libcontainer/utils"
 	"github.com/opencontainers/runtime-spec/specs-go"
 	"github.com/sirupsen/logrus"
 

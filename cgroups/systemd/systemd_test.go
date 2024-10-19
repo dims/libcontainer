@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opencontainers/runc/libcontainer/cgroups"
-	"github.com/opencontainers/runc/libcontainer/configs"
-	"github.com/opencontainers/runc/libcontainer/devices"
+	"github.com/dims/libcontainer/cgroups"
+	"github.com/dims/libcontainer/configs"
+	"github.com/dims/libcontainer/devices"
 )
 
 func newManager(t *testing.T, config *configs.Cgroup) (m cgroups.Manager) {
